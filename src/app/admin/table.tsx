@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { trpc } from "../_trpc/client";
-import { Link } from "@prisma/client";
 import { Edit, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -34,7 +33,7 @@ export function LinkTable() {
     refetch: refetchLinks,
   } = trpc.links.getAllLinks.useQuery();
 
-  const { mutateAsync: deleteLink, loading: isDeleteLoading } =
+  const { mutateAsync: deleteLink, isLoading: isDeleteLoading } =
     trpc.links.deleteLink.useMutation();
   const handleDelete = async (id: number) => {
     await deleteLink(
@@ -45,6 +44,11 @@ export function LinkTable() {
             position: "bottom-right",
           });
           refetchLinks();
+        },
+        onError: (data) => {
+          toast.error(data.message, {
+            position: "bottom-right",
+          });
         },
       }
     );
@@ -66,7 +70,7 @@ export function LinkTable() {
           </TableHeader>
           <TableBody>
             {linkData &&
-              linkData.map((link: Link) => (
+              linkData.map((link) => (
                 <TableRow key={link.id}>
                   <TableCell>{link.link}</TableCell>
                   <TableCell>{link.shortUrl}</TableCell>
@@ -76,7 +80,7 @@ export function LinkTable() {
                       <AlertDialogTrigger>
                         <Button variant={"ghost"} className="pl-3 flex">
                           {isDeleteLoading ? (
-                            <Loader2 className="animate-spin" />
+                            <Loader2 className="animate-spi text-red-500 ml-1" />
                           ) : (
                             <Trash2 className="w-4 h-4 text-red-500 ml-1" />
                           )}

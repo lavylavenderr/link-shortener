@@ -11,7 +11,7 @@ export function Shortener() {
   const [url, setURL] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { mutateAsync: createLink, loading: isLinkLoading } =
+  const { mutateAsync: createLink, isLoading: isLinkLoading } =
     trpc.links.createLink.useMutation();
   const createSubmit = async () => {
     await createLink(
