@@ -20,8 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-grid-neutral-200/40 bg-neutral-100 text-neutral-900 antialiased dark:bg-grid-neutral-800/50 dark:bg-neutral-900 dark:text-neutral-100 min-h-full">
-        <div className={cn(primary.className, "pb-8")}>
+      <body>
+        <div className={primary.className}>
           <div>{children}</div>
         </div>
       </body>
