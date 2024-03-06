@@ -23,6 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 export function LinkTable() {
   const [open, setOpen] = useState<boolean>(false);
@@ -72,8 +73,24 @@ export function LinkTable() {
             {linkData &&
               linkData.map((link) => (
                 <TableRow key={link.id}>
-                  <TableCell>{link.link}</TableCell>
-                  <TableCell>{link.shortUrl}</TableCell>
+                  <TableCell>
+                    <Link
+                      href={link.link}
+                      target="_blank"
+                      className="text-blue-500"
+                    >
+                      {link.link}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={link.shortUrl}
+                      target="_blank"
+                      className="text-blue-500"
+                    >
+                      {link.shortUrl}
+                    </Link>
+                  </TableCell>
                   <TableCell className="text-center">{link.hits}</TableCell>
                   <TableCell className="cursor-pointer">
                     <AlertDialog>
