@@ -14,3 +14,7 @@ export async function isLoggedIn(cookie: string | undefined) {
   if (!session) return false;
   else return true;
 }
+
+export function getBaseURL() {
+  return process.env.BASE_URL
+}
