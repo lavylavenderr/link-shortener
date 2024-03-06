@@ -16,8 +16,6 @@ export function LinkTable() {
   const { data: linkData, isLoading: linksLoading } =
     trpc.links.getAllLinks.useQuery();
 
-  console.log(linkData);
-
   return linksLoading ? (
     <Loader2 className="animate-spin flex mx-auto h-12 w-12 mt-10" />
   ) : (

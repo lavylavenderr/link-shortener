@@ -5,12 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllLinks, isLoggedIn } from "@/lib/utils";
+import { isLoggedIn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Shortener } from "./shortener";
-import { Edit, Trash2 } from "lucide-react";
-import { trpc } from "../_trpc/client";
 import { LinkTable } from "./table";
 
 export default async function Admin() {
@@ -22,7 +20,7 @@ export default async function Admin() {
 
   return (
     <div className="h-screen flex items-center justify-center bg-cover bg-blobs">
-      <Card className="w-full max-w-3xl">
+      <Card className="w-full max-w-3xl m-4 md:m-0">
         <CardHeader>
           <CardTitle>Shortened Links</CardTitle>
           <CardDescription>Manage and create shortened links</CardDescription>
