@@ -1,9 +1,10 @@
+import { inferRouterOutputs } from '@trpc/server';
+import { links } from './routers/links';
 import { router } from './trpc';
  
-const appRouter = router({
-  // ...
+export const appRouter = router({
+  links
 });
- 
-// Export type router type signature,
-// NOT the router itself.
+
 export type AppRouter = typeof appRouter;
+export type RouterOutput = inferRouterOutputs<AppRouter>

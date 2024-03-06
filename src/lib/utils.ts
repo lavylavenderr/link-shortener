@@ -14,3 +14,8 @@ export async function isLoggedIn(cookie: string | undefined) {
   if (!session) return false;
   else return true;
 }
+
+export async function getAllLinks() {
+  const links = await prisma.link.findMany()
+  return links
+}

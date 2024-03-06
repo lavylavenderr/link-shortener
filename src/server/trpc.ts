@@ -9,15 +9,20 @@ export const createContext = async (opts: CreateNextContextOptions) => {
 
   const user = await prisma.session.findUnique({
     where: {
-      key: cookies["foxauth"] ?? "",
+      // @ts-expect-error
+      key: cookies.get("foxauth").value ?? "",
     },
     include: {
-      user: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
     },
   });
 
   return {
-    user: user ?? {},
+    user: user,
   };
 };
 export type Context = Awaited<ReturnType<typeof createContext>>;
