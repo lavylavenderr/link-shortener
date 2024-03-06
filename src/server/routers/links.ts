@@ -31,14 +31,46 @@ export const links = router({
         message: "Not logged in",
       });
 
-    const links = await prisma.link.findMany()
+    const links = await prisma.link.findMany();
 
-    return links
+    return links;
   }),
+  deleteLink: authProcedure
+    .input(z.object({ linkId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          username: ctx.user.user.username,
+        },
+      });
+      if (!user)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not logged in",
+        });
+
+      const link = await prisma.link.findUnique({
+        where: {
+          id: input.linkId,
+        },
+      });
+      if (!link)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Link not found",
+        });
+
+      await prisma.link.delete({
+        where: { id: input.linkId },
+      });
+
+      return {
+        message: "OK",
+      };
+    }),
   createLink: authProcedure
     .input(z.object({ newURL: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      console.log(ctx);
       const user = await prisma.user.findUnique({
         where: {
           username: ctx.user.user.username,
