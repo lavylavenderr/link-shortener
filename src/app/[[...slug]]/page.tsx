@@ -17,6 +17,9 @@ async function checkIfRedirect(slug: string) {
     where: {
       uid: slug[0],
     },
+    cacheStrategy: {
+      ttl: 300,
+    },
   });
 
   // If not, return
