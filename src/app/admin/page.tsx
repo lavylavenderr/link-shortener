@@ -11,9 +11,23 @@ import { redirect } from "next/navigation";
 import { Shortener } from "./shortener";
 import { LinkTable } from "./table";
 
+interface cookieData {
+  name: string;
+  value: string;
+}
+
+async function getCookieData() {
+  const cookieData = cookies().getAll();
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve(cookieData);
+    }, 1000)
+  );
+}
+
 export default async function Admin() {
-  const cookieStore = cookies();
-  const authCookie = cookieStore.get("foxauth");
+  const cookieStore = (await getCookieData()) as cookieData[];
+  const authCookie = cookieStore.find((obj) => obj.name === "foxauth");
   const isUserAuthenitcated = await isLoggedIn(authCookie?.value);
 
   if (!isUserAuthenitcated) return redirect("/admin/login");

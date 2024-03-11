@@ -6,7 +6,6 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { trpc } from "@/app/_trpc/client";
-import Link from "next/link";
 
 export function Shortener() {
   const [url, setURL] = useState<string>("");
@@ -56,9 +55,6 @@ export function Shortener() {
       >
         {isLinkLoading ? <Loader2 className="animate-spin" /> : "Create"}
       </Button>
-      <Link href="/api/logout">
-      <Button className="bg-[#6600FF]">Logout</Button>
-      </Link>
     </div>
   );
 }
