@@ -69,7 +69,7 @@ export const links = router({
       };
     }),
   createLink: authProcedure
-    .input(z.object({ newURL: z.string() }))
+    .input(z.object({ newURL: z.string().url() }))
     .mutation(async ({ ctx, input }) => {
       const user = await prisma.user.findUnique({
         where: {

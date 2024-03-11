@@ -1,7 +1,7 @@
-import { cookies } from "next/headers";
-import { TRPCError, inferAsyncReturnType, initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { prisma } from "@/lib/db";
+import { ZodError } from "zod";
 
 export const createContext = async (opts: CreateNextContextOptions) => {
   const req = opts.req;
@@ -27,7 +27,21 @@ export const createContext = async (opts: CreateNextContextOptions) => {
 };
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({
+  errorFormatter(opts) {
+    const { shape, error } = opts;
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.code === "BAD_REQUEST" && error.cause instanceof ZodError
+            ? error.cause.flatten()
+            : null,
+      },
+    };
+  },
+});
 export const router = t.router;
 export const mergeRouters = t;
 

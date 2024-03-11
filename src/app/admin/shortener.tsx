@@ -6,10 +6,10 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { trpc } from "@/app/_trpc/client";
+import Link from "next/link";
 
 export function Shortener() {
   const [url, setURL] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
 
   const { mutateAsync: createLink, isLoading: isLinkLoading } =
     trpc.links.createLink.useMutation();
@@ -22,6 +22,18 @@ export function Shortener() {
           toast.success("Link successfully created!", {
             position: "bottom-right",
           });
+          setTimeout(() => document.location.reload(), 500);
+        },
+        onError: (data) => {
+          if (data.data?.zodError) {
+            toast.error("Invalid URL", {
+              position: "bottom-right",
+            });
+          } else {
+            toast.error(data.message, {
+              position: "bottom-right",
+            });
+          }
         },
       }
     );
@@ -44,6 +56,9 @@ export function Shortener() {
       >
         {isLinkLoading ? <Loader2 className="animate-spin" /> : "Create"}
       </Button>
+      <Link href="/api/logout">
+      <Button className="bg-[#6600FF]">Logout</Button>
+      </Link>
     </div>
   );
 }

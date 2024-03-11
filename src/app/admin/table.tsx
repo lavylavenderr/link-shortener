@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { trpc } from "../_trpc/client";
-import { Edit, Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 
 export function LinkTable() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const {
     data: linkData,
@@ -37,6 +37,7 @@ export function LinkTable() {
   const { mutateAsync: deleteLink, isLoading: isDeleteLoading } =
     trpc.links.deleteLink.useMutation();
   const handleDelete = async (id: number) => {
+    setDeletingId(id);
     await deleteLink(
       { linkId: id },
       {
@@ -53,10 +54,11 @@ export function LinkTable() {
         },
       }
     );
+    setDeletingId(null);
   };
 
   return linksLoading ? (
-    <Loader2 className="animate-spin flex mx-auto h-12 w-12 mt-10" />
+    <Loader2 className="animate-spin flex mx-auto h-12 w-12 mt-10 text-[#6600FF]" />
   ) : (
     <>
       <div className="border rounded-lg">
@@ -84,11 +86,19 @@ export function LinkTable() {
                   </TableCell>
                   <TableCell>
                     <Link
-                      href={link.shortUrl}
+                      href={`${
+                        document.location.protocol +
+                        "//" +
+                        document.location.host
+                      }/${link.uid}`}
                       target="_blank"
                       className="text-blue-500"
                     >
-                      {link.shortUrl}
+                      {`${
+                        document.location.protocol +
+                        "//" +
+                        document.location.host
+                      }/${link.uid}`}
                     </Link>
                   </TableCell>
                   <TableCell className="text-center">{link.hits}</TableCell>
@@ -96,7 +106,7 @@ export function LinkTable() {
                     <AlertDialog>
                       <AlertDialogTrigger>
                         <Button variant={"ghost"} className="pl-3 flex">
-                          {isDeleteLoading ? (
+                          {deletingId === link.id ? (
                             <Loader2 className="animate-spi text-red-500 ml-1" />
                           ) : (
                             <Trash2 className="w-4 h-4 text-red-500 ml-1" />
