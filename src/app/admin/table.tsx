@@ -147,13 +147,22 @@ export function LinkTable() {
     },
   ];
 
-  const [pageSize, setPageSize] = useState(10);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, 
+    pageSize: 5,
+  });
+
   const table = useReactTable({
     data: linkData || [],
     columns,
+    // manualPagination: true,
+    // rowCount: linkData?.length,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    pageCount: Math.ceil((linkData?.length || 0) / pageSize),
+    onPaginationChange: setPagination,
+    state: {
+      pagination
+    }
   });
 
   return linksLoading ? (
