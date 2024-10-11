@@ -5,7 +5,6 @@ import axios from "axios";
 import { DiscordUser } from "@/lib/types";
 import { prisma } from "@/lib/db";
 import { lucia } from "@/lib/auth";
-import { getIP } from "@/lib/utils";
 import { OAuth2RequestError } from "arctic";
 
 export async function GET(req: NextRequest) {
@@ -37,7 +36,10 @@ export async function GET(req: NextRequest) {
 
     if (userObj) {
       const session = await lucia.createSession(userObj.id, {
-        ipAddress: getIP(),
+        ipAddress:
+          headers().get("x-forwarded-for")?.split(",")[0] ||
+          headers().get("x-real-ip") ||
+          "0.0.0.0",
         userAgent: headers().get("User-Agent") ?? "None found",
       });
       const sessionCookie = lucia.createSessionCookie(session.id);
