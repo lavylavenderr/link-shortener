@@ -12,7 +12,7 @@ import { validateRequest } from "@/lib/auth";
 
 export default async function Admin() {
   const { user } = await validateRequest();
-  if (!user) return redirect("/admin/login");
+  if (!user) return redirect("/login");
 
   return (
     <div className="h-screen flex items-center justify-center bg-cover bg-blobs p-4">

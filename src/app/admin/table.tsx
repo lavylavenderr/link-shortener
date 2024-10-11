@@ -29,7 +29,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
-import Link from "next/link";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllLinks } from "@/actions/links/getAllLinks";
 import z from "zod";
@@ -84,6 +83,13 @@ export function LinkTable() {
     setDeletingId(null);
   };
 
+  const handleCopy = async (url: string) => {
+    navigator.clipboard.writeText(url)
+    toast.success("Copied to clipboard!", {
+      position: "bottom-right",
+    });
+  };
+
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "link",
@@ -98,13 +104,16 @@ export function LinkTable() {
       accessorKey: "shortUrl",
       header: "Shortened URL",
       cell: ({ row }) => (
-        <a
-          href={`${document.location.protocol}//${document.location.host}/${row.original.uid}`}
-          target="_blank"
-          className="text-blue-500 text-center"
+        <div
+          onClick={() =>
+            handleCopy(
+              `${document.location.protocol}//${document.location.host}/${row.original.uid}`
+            )
+          }
+          className="text-blue-500 cursor-pointer"
         >
           {`${document.location.protocol}//${document.location.host}/${row.original.uid}`}
-        </a>
+        </div>
       ),
     },
     {
@@ -148,21 +157,19 @@ export function LinkTable() {
   ];
 
   const [pagination, setPagination] = useState({
-    pageIndex: 0, 
+    pageIndex: 0,
     pageSize: 5,
   });
 
   const table = useReactTable({
     data: linkData || [],
     columns,
-    // manualPagination: true,
-    // rowCount: linkData?.length,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     state: {
-      pagination
-    }
+      pagination,
+    },
   });
 
   return linksLoading ? (
