@@ -1,11 +1,9 @@
-import { cn } from "@/lib/utils";
 import "../styles/globals.css";
 
+import { ReactQueryProvider } from "@/components/providers/query";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import font from "next/font/local";
-import TRPCProvider from "@/app/_trpc/Provider";
-
 const primary = font({
   src: "../fonts/roobert-variable.woff2",
 });
@@ -23,10 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={primary.className}>
-        <TRPCProvider>
+        <ReactQueryProvider>
           {children}
           <Toaster />
-        </TRPCProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

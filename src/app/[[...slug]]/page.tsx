@@ -11,49 +11,31 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-async function updateHits(slug: string) {
-  const link = await prisma.link.findUnique({
-    where: { uid: slug },
-  });
-
-  if (!link) return null;
-
-  let hits = ++link.hits;
-  await prisma.link.update({
-    where: {
-      id: link.id,
-    },
-    data: {
-      hits,
-    },
-  });
-
-  return true;
-}
-
 async function checkIfRedirect(slug: string) {
-  // Check if the slug exists in the cache
   const cachedKey = get<string>(slug[0]);
+
   if (cachedKey) {
-    await updateHits(slug[0]);
+    await prisma.link.updateMany({
+      where: { uid: slug[0] },
+      data: { hits: { increment: 1 } },
+    });
     return redirect(cachedKey);
   }
 
-  // If not found in cache, query the database
   const link = await prisma.link.findUnique({
-    where: {
-      uid: slug[0],
-    },
+    where: { uid: slug[0] },
+    select: { id: true, link: true, hits: true },
   });
 
-  // If link found, add it to cache
   if (link) {
     set<string>(slug[0], link.link);
-    await updateHits(slug[0]);
+    await prisma.link.update({
+      where: { id: link.id },
+      data: { hits: { increment: 1 } },
+    });
     return redirect(link.link);
   }
 
-  // If link not found, return
   return;
 }
 
@@ -70,7 +52,7 @@ export default async function Home({ params }: { params: { slug: string } }) {
           </CardDescription>
         </CardHeader>
         <CardFooter className="flex justify-center gap-3 w-full">
-          <Link href="/admin/login" className="text-sm w-full">
+          <Link href="/login" className="text-sm w-full">
             <Button className="bg-[#6600FF] w-full">Login</Button>
           </Link>
           <Link href="/admin" className="w-full text-sm">

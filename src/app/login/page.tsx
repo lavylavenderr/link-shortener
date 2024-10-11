@@ -1,14 +1,10 @@
-import { isLoggedIn } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { LoginCard } from "./card";
+import { validateRequest } from "@/lib/auth";
 
 export default async function AdminLogin() {
-  const cookieStore = cookies();
-  const authCookie = cookieStore.get("foxauth");
-  const isUserAuthenitcated = await isLoggedIn(authCookie?.value);
-
-  if (isUserAuthenitcated) return redirect("/admin");
+  const { user } = await validateRequest()
+  if (user) return redirect("/admin")
 
   return (
     <div className="h-screen flex items-center justify-center bg-blog-background bg-cover bg-blobs overflow-y-hidden">

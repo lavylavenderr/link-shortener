@@ -11,22 +11,27 @@ model Link {
   id        Int      @id @default(autoincrement())
   link      String
   uid       String   @unique
-  shortUrl  String
   hits      Int      @default(0)
   createdAt DateTime @default(now())
 }
 
 model Session {
-  key       String   @unique
+  id String @id
+
+  ipAddress String
+  userAgent String
+
+  expiresAt DateTime
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  password  String
-  sessions  Session[]
-  createdAt DateTime
+  id              Int       @id @default(autoincrement())
+  discordId       String    @unique
+  discordUsername String
+  sessions        Session[]
+  createdAt       DateTime  @default(now())
 }
