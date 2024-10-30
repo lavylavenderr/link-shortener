@@ -40,6 +40,8 @@ export async function GET(req: NextRequest) {
     });
     const tokens = await tokenResponseData.json();
 
+    console.log(tokens)
+
     const { data: userData } = await axios.get<DiscordUser>(
       "https://discord.com/api/users/@me",
       {
