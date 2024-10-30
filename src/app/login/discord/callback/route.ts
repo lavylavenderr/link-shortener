@@ -14,7 +14,10 @@ export async function GET(req: NextRequest) {
   const storedState = cookies().get("discord_state")?.value ?? null;
 
   if (!code || !state || !storedState || state !== storedState) {
-    return new Response(null, {
+    return new Response(JSON.stringify({
+      message: "Invalid Request",
+      success: false
+    }), {
       status: 400,
     });
   }
