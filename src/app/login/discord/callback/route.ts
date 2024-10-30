@@ -10,9 +10,14 @@ import { OAuth2RequestError } from "arctic";
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const storedState = cookies().get("discord_state")?.value ?? null;
 
-  if (!code) {
-    return new Response(null, {
+  if (!code || !state || !storedState || state !== storedState) {
+    return new Response(JSON.stringify({
+      message: "Invalid Request",
+      success: false
+    }), {
       status: 400,
     });
   }
