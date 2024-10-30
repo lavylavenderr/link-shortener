@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
       success: false
     }), {
       status: 400,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
   }
 
@@ -75,8 +78,15 @@ export async function GET(req: NextRequest) {
     console.log(error);
 
     if (error instanceof OAuth2RequestError) {
-      return new Response(null, {
+      return new Response(JSON.stringify({
+        message: "An OAuth2 Error has occured.",
+        success: false,
+        error: error
+      }), {
         status: 400,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
     }
 
