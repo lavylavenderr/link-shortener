@@ -6,6 +6,7 @@ import { DiscordUser } from "@/lib/types";
 import { prisma } from "@/lib/db";
 import { lucia } from "@/lib/auth";
 import { OAuth2RequestError } from "arctic";
+import { env } from "@/lib/env";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -26,7 +27,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const tokens = await discord.validateAuthorizationCode(code);
+    const tokenResponseData = await fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
+      body: new URLSearchParams({
+        client_id: env.LINK_DISCORD_CLIENTID,
+        client_secret: env.LINK_DISCORD_CLIENTSECRET,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: env.LINK_DISCORD_REDIRECT_URL,
+        scope: 'identify+email'
+      })
+    });
+    const tokens = await tokenResponseData.json();
+
     const { data: userData } = await axios.get<DiscordUser>(
       "https://discord.com/api/users/@me",
       {
