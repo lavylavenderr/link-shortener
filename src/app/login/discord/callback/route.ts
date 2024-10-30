@@ -10,9 +10,8 @@ import { OAuth2RequestError } from "arctic";
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
-  const state = url.searchParams.get("state");
 
-  if (!code || !state) {
+  if (!code) {
     return new Response(null, {
       status: 400,
     });
