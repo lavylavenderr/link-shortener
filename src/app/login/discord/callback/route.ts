@@ -11,9 +11,8 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const storedState = cookies().get("discord_state")?.value ?? null;
 
-  if (!code || !state || !storedState || state !== storedState) {
+  if (!code || !state) {
     return new Response(null, {
       status: 400,
     });
